@@ -120,3 +120,41 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# configure logging
+LOGGING = {
+  'formatters': {
+      'logstash': {
+          '()': 'logstash_async.formatter.DjangoLogstashFormatter',
+          'message_type': 'python-logstash',
+          'fqdn': False, # Fully qualified domain name. Default value: false.
+          'extra_prefix': 'dev', #
+          'extra': {
+              'application': 'my elastic logger',
+              #'project_path': PROJECT_APP_PATH,
+              'environment': 'development'
+          }
+      },
+  },
+  'handlers': {
+      'logstash': {
+          'level': 'DEBUG',
+          'class': 'logstash_async.handler.AsynchronousLogstashHandler',
+          'transport': 'logstash_async.transport.TcpTransport',
+          'host': 'logstash.host.tld',
+          'port': 5959,
+          #'ssl_enable': True,
+          #'ssl_verify': True,
+          #'ca_certs': 'etc/ssl/certs/logstash_ca.crt',
+          #'certfile': '/etc/ssl/certs/logstash.crt',
+          #'keyfile': '/etc/ssl/private/logstash.key',
+      },
+  },
+  'loggers': {
+      'django.request': {
+          'handlers': ['logstash'],
+          'level': 'DEBUG',
+          'propagate': True,
+      },
+  },
+}
