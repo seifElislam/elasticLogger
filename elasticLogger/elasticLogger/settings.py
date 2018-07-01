@@ -123,6 +123,7 @@ STATIC_URL = '/static/'
 
 # configure logging
 LOGGING = {
+  'version': 1,
   'handlers': {
       'logstash': {
           'level': 'DEBUG',
