@@ -123,31 +123,16 @@ STATIC_URL = '/static/'
 
 # configure logging
 LOGGING = {
-  'formatters': {
-      'logstash': {
-          '()': 'logstash_async.formatter.DjangoLogstashFormatter',
-          'message_type': 'python-logstash',
-          'fqdn': False, # Fully qualified domain name. Default value: false.
-          'extra_prefix': 'dev', #
-          'extra': {
-              'application': 'my elastic logger',
-              #'project_path': PROJECT_APP_PATH,
-              'environment': 'development'
-          }
-      },
-  },
   'handlers': {
       'logstash': {
           'level': 'DEBUG',
-          'class': 'logstash_async.handler.AsynchronousLogstashHandler',
-          'transport': 'logstash_async.transport.TcpTransport',
-          'host': 'logstash.host.tld',
-          'port': 5959,
-          #'ssl_enable': True,
-          #'ssl_verify': True,
-          #'ca_certs': 'etc/ssl/certs/logstash_ca.crt',
-          #'certfile': '/etc/ssl/certs/logstash.crt',
-          #'keyfile': '/etc/ssl/private/logstash.key',
+          'class': 'logstash.LogstashHandler',
+          'host': 'localhost',
+          'port': 5959,# Default value: 5959
+          'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+          'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
+          'fqdn': False, # Fully qualified domain name. Default value: false.
+          'tags': ['tag1', 'tag2'], # list of tags. Default: None.
       },
   },
   'loggers': {
