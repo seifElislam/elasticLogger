@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+ elasticsearch:
+  image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
+  container_name: elasticsearch
+  ports:
+   - "9200:9200"
+   - "9300:9300"
+  environment:
+   - discovery.type=single-node
+  networks: ['stack']
+
+ logstash:
+  image: docker.elastic.co/logstash/logstash:6.3.0
+  container_name: logstash
+  ports:
+   - "5959:5959/udp"
+  volumes:
+   - ./logstash.conf:/pipeline/logstash.conf
+  networks: ['stack']
+  depends_on: ['elasticsearch']
+
+ kibana:
+  image: docker.elastic.co/kibana/kibana:6.3.0
+  container_name: kibana
+  ports:
+   - "5601:5601"
+  networks: ['stack']
+  depends_on: ['elasticsearch']
+
+networks:
+  stack:
+    driver: bridge
