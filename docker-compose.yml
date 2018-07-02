@@ -17,7 +17,7 @@ services:
   ports:
    - "5959:5959/udp"
   volumes:
-   - ./logstash.conf:/pipeline/logstash.conf
+   - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
   networks: ['stack']
   depends_on: ['elasticsearch']
 
