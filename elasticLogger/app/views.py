@@ -9,7 +9,7 @@ from .models import Snippet
 from .serializers import SnippetSerializer
 
 
-logger = logging.getLogger(__name__)
+# logger = logging.getlogging(__name__)
 
 
 @csrf_exempt
@@ -20,7 +20,8 @@ def snippet_list(request):
     if request.method == 'GET':
         snippets = Snippet.objects.all()
         serializer = SnippetSerializer(snippets, many=True)
-        logger.info('List all snippets')
+        print('x')
+        logging.info('List all snippets')
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
@@ -28,9 +29,9 @@ def snippet_list(request):
         serializer = SnippetSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            logger.info('Create a new snippet')
+            logging.info('Create a new snippet')
             return JsonResponse(serializer.data, status=201)
-        logger.error('Something went wrong!')
+        logging.error('Something went wrong!')
         return JsonResponse(serializer.errors, status=400)
     
 @csrf_exempt
@@ -41,12 +42,12 @@ def snippet_detail(request, pk):
     try:
         snippet = Snippet.objects.get(pk=pk)
     except Snippet.DoesNotExist:
-        logger.error('Snippet with id {} doesn\'t exist'.format(pk))
+        logging.error('Snippet with id {} doesn\'t exist'.format(pk))
         return HttpResponse(status=404)
 
     if request.method == 'GET':
         serializer = SnippetSerializer(snippet)
-        logger.info('Get snippet with id of {}'.format(pk))
+        logging.info('Get snippet with id of {}'.format(pk))
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
@@ -54,12 +55,12 @@ def snippet_detail(request, pk):
         serializer = SnippetSerializer(snippet, data=data)
         if serializer.is_valid():
             serializer.save()
-            logger.info('Update snippet with id of {}'.format(pk))
+            logging.info('Update snippet with id of {}'.format(pk))
             return JsonResponse(serializer.data)
-        logger.error('Some thing wrong in updating snippet with id of {}'.format(pk))
+        logging.error('Some thing wrong in updating snippet with id of {}'.format(pk))
         return JsonResponse(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
         snippet.delete()
-        logger.info('Delete snippet with id of {}'.format(pk))
+        logging.info('Delete snippet with id of {}'.format(pk))
         return HttpResponse(status=204)

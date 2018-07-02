@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import logging.config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -121,26 +122,46 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Formatting the logging and setting level to debug level.
+# logging.basicConfig(format='[%(levelname)s]: %(asctime)s - %(message)s', level=logging.INFO)
+
 # configure logging
+# LOGGING_CONFIG = None
 LOGGING = {
   'version': 1,
+  'disable_existing_loggers': False,
+  'formatters': {
+      'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+  },
   'handlers': {
-      'logstash': {
-          'level': 'DEBUG',
-          'class': 'logstash.LogstashHandler',
-          'host': 'localhost',
-          'port': 5959,# Default value: 5959
-          'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-          'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
-          'fqdn': False, # Fully qualified domain name. Default value: false.
-          'tags': ['tag1', 'tag2'], # list of tags. Default: None.
-      },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'logstash': {
+            'level': 'DEBUG',
+            'class': 'logstash.LogstashHandler',
+            'host': 'localhost',
+            'port': 5959, # Default value: 5959
+            'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+            'message_type': 'my_logs',  # 'type' field in logstash message. Default value: 'logstash'.
+            'fqdn': False, # Fully qualified domain name. Default value: false.
+            'tags': ['my_logs'], # list of tags. Default: None.
+        },
   },
   'loggers': {
-      'django.request': {
-          'handlers': ['logstash'],
-          'level': 'DEBUG',
-          'propagate': True,
-      },
-  },
+        '': {
+            'handlers': ['console', 'logstash'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        '': {
+            'handlers': ['console', 'logstash'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
 }
