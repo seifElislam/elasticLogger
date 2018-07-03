@@ -20,7 +20,6 @@ def snippet_list(request):
     if request.method == 'GET':
         snippets = Snippet.objects.all()
         serializer = SnippetSerializer(snippets, many=True)
-        print('x')
         logging.info('List all snippets')
         return JsonResponse(serializer.data, safe=False)
 
